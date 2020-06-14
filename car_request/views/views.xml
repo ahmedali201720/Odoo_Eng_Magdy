@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <record id="view_hr_employee_car_request_form" model="ir.ui.view">
+            <field name="name">view.hr.employee.car.request.form</field>
+            <field name="model">hr.employee</field>
+            <field name="arch" type="xml">
+                <form string="New Emp form">
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="work_email"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_employe_new" model="ir.actions.act_window">
+            <field name="name">New Employee</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">hr.employee</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="view_id" ref="view_hr_employee_car_request_form"/>
+        </record>
+        
+        <record id="view_car_request_form" model="ir.ui.view">
+            <field name="name">view.car.request.form</field>
+            <field name="model">car.request</field>
+            <field name="arch" type="xml">
+                <form string="Car Request Form">
+                    <header>
+                        <button name="set_approve" string="Approve" class="oe_highlight" states="new" type="object"/>
+                        <button name="set_reject" class="oe_highlight" type="object" states="new,cancel" string="Reject"/>
+                        <button name="set_cancel" type="object" states="new,approved" string="Cancel" confirm="Are you sure ? ITI"/>
+                        <button name="%(action_employe_new)d" class="oe_highlight" type="action" string="New Emp"/>
+                        <field name="state" widget="statusbar" statusbar_visible="new,approved"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only"/>
+                            <h1>
+                                <field name="name" placeholder="Description"/>
+                            </h1>
+                        </div>
+                        <group>
+<!--                            <group groups="car_request.group_car_request_manager">-->
+                            <group>
+                                <field name="employee_id"/>
+                                <field name="vehicle_id"/>
+                                <field name="email"/>
+                                <field name="other_email" attrs="{'required': [('state', '=', 'approved')]}"/>
+                            </group>
+                            <group>
+                                <field name="date_from"/>
+                                <field name="date_to"/>
+                                <field name="show_info"/>
+<!--                                <field name="state" widget="radio"/>-->
+<!--                                <field name="state" widget="priority"/>-->
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Comment">
+                                <group>
+                                    <field name="comment" nolabel="1"/>
+                                </group>
+                            </page>
+                            <page string="Other info" attrs="{'invisible': [('show_info', '=', False)]}">
+                                <group>
+                                    <field name="info"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+<!--        decoration-bf="message_needaction==True" decoration-info="state=='confirmed'"
+                      decoration-danger="date_planned_start&lt;current_date and state not in ('done','cancel')"
+                      decoration-muted="state in ('done','cancel')"-->
+        
+        <record id="view_car_request_tree" model="ir.ui.view">
+            <field name="name">view.car.request.tree</field>
+            <field name="model">car.request</field>
+            <field name="arch" type="xml">
+                <tree string="Car Request Tree" decoration-bf="state=='new'" decoration-muted="state=='cancel'" decoration-success="state=='approved'" decoration-danger="state=='reject'">
+                    <field name="name"/>
+                    <field name="employee_id"/>
+                    <field name="vehicle_id"/>
+                    <field name="date_from"/>
+                    <field name="date_to"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_car_request_search" model="ir.ui.view">
+            <field name="name">view.car.request.search</field>
+            <field name="model">car.request</field>
+            <field name="arch" type="xml">
+                <search string="Car Request Search">
+                    <field name="name"/>
+                    <field name="employee_id"/>
+
+                    <filter name="new_requests" domain="[('state', '=', 'new')]" string="New Requests"/>
+                    <filter name="approved_requests" domain="[('state', '=', 'approved')]" string="Approved Requests"/>
+
+                    <group expand="0" string="Group By">
+                        <filter name="groupby_state" string="State" context="{'group_by':'state'}"/>
+                        <filter name="groupby_employee" string="Employee" context="{'group_by':'employee_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_car_request_view" model="ir.actions.act_window">
+            <field name="name">Car Request</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">car.request</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to create car request
+              </p><p>
+                Request a car for a journey 
+              </p>
+            </field>
+        </record>
+        
+        <menuitem id="menu_car_request_root" name="Car Request Root" sequence="2"/>
+        <menuitem id="menu_car_request_categ" name="Car Request Category" parent="menu_car_request_root" sequence="1"/>
+        <menuitem id="menu_car_request_view" name="Car Request" parent="menu_car_request_categ" action="action_car_request_view" sequence="1"/>
+        
+    </data>
+</odoo>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+       <template id="list_requests" name="Car Requests">
+           <t t-call="website.layout">
+               <div class="container">
+
+                   <a href="https://www.google.com" class="btn btn-success">Google</a>
+
+                   <table  class="table table-striped">
+                       <thead>
+                           <tr>
+                               <th class="text-success">Description</th>
+                               <th>Employee</th>
+                               <th>Car</th>
+                               <th>Start Date</th>
+                               <th>End Date</th>
+                               <th>State</th>
+                           </tr>
+                       </thead>
+                       <tbody>
+                           <tr t-as="req" t-foreach="requests">
+                               <td><t t-esc="req.name"/></td>
+                               <td>
+                                   <a t-att-href="'/employee/%s' % req.employee_id.id ">
+                                        <t t-esc="req.employee_id.name"/>
+                                   </a>
+                               </td>
+                               <td><t t-esc="req.vehicle_id.name"/></td>
+                               <td><t t-esc="req.date_from"/></td>
+                               <td><t t-esc="req.date_to"/></td>
+                               <td t-att-class="req.state=='approved' and 'text-success' or req.state=='reject' and 'text-danger'">
+                                   <t t-if="req.state=='new'">New</t>
+                                   <t t-if="req.state=='reject'">Rejected</t>
+                                   <t t-if="req.state=='approved'">Approved</t>
+                                   <t t-if="req.state=='cancel'">Cancelled</t>
+                               </td>
+                           </tr>
+                       </tbody>
+                   </table>
+               </div>
+           </t>
+       </template>
+
+        <template id="employee_details" name="Employee Details">
+            <t t-call="website.layout">
+                <div class="container">
+                    <div class="oe_structure"/>
+                    <h1><t t-esc="employee.name"/></h1>
+
+                    <div><strong>Email:</strong><t t-esc="employee.work_email"/></div>
+                    <div class="oe_structure"/>
+                </div>
+            </t>
+        </template>
+
+    </data>
+</odoo>

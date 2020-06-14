@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_car_request_car_request,car_request.car_request,model_car_request,base.group_user,0,0,0,0
+access_car_request_user,car_request_user,model_car_request,group_car_request_user,1,0,1,0
+access_car_request_manager,car_request_manager,model_car_request,group_car_request_manager,1,1,1,1
